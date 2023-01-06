@@ -1,9 +1,7 @@
 import time
 import bs4 as bs
-from selenium import webdriver
 import requests
 import pandas as pd
-import macroeconomic_data as mcd
 import yfinance as yf
 from dash import Dash, dcc, html,dash_table
 import plotly.graph_objects as go
@@ -94,7 +92,7 @@ def uk_yield_rate():
     '''with pd.option_context('display.max_rows', None, 'display.max_columns', None):  # more options can be specified also
         print(rates)'''
     return rates
-
+'''
 def euro_yields():
     driver = webdriver.Safari()
     driver.get("https://www.ecb.europa.eu/stats/financial_markets_and_interest_rates/euro_area_yield_curves/html/index.en.html")
@@ -111,7 +109,7 @@ def euro_yields():
     rates['Yield'] =rates[rates.columns[1]]/100
     #print(rates)
     return rates
-
+'''
 
 def inflation_euro():
     page = requests.get("https://www.rateinflation.com/inflation-rate/euro-area-historical-inflation-rate/")
