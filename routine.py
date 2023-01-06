@@ -3,6 +3,7 @@ import bs4 as bs
 from selenium import webdriver
 import requests
 import pandas as pd
+import macroeconomic_data as mcd
 import yfinance as yf
 from dash import Dash, dcc, html,dash_table
 import plotly.graph_objects as go
@@ -95,7 +96,7 @@ def uk_yield_rate():
     return rates
 
 def euro_yields():
-    driver = webdriver.Chrome()
+    driver = webdriver.Safari()
     driver.get("https://www.ecb.europa.eu/stats/financial_markets_and_interest_rates/euro_area_yield_curves/html/index.en.html")
     '''el= driver.find_element_by_xpath('//span[@onclick ="charts[0].switchDimension(1,1);"]"]')
     el.click()'''
@@ -143,20 +144,14 @@ def inflation_us():
     return rates
 
 def economic_calendar():
-    driver = webdriver.Chrome()
-    driver.get("https://www.investing.com/economic-calendar/")
-    driver.implicitly_wait(20)
-    soup = bs.BeautifulSoup(driver.page_source, 'html.parser')
-    table = soup.find('table',{'id':'economicCalendarData'})
-    rates = pd.read_html(str(table))[0]
-    driver.quit()
-    calendar = pd.DataFrame()
-    calendar['Time'] = rates[('Time','Time')]
-    calendar['Cur'] = rates[('Cur.','Cur.')]
-    calendar['Event'] = rates[('Event','Event')]
-    '''with pd.option_context('display.max_rows', None, 'display.max_columns', None):  # more options can be specified also
-        print(calendar.iloc[1:])'''
-    return calendar.iloc[1:]
+    page = requests.get("https://www.myfxbook.com/forex-economic-calendar")
+    soup = bs.BeautifulSoup(page.text, 'lxml')
+    table = soup.find_all(id="economicCalendarContent")
+    df = pd.read_html(str(table))[0].iloc[1:-1]
+    n_df = df[[df.columns[0]]]
+    n_df['Cur'] = df[df.columns[3]]
+    n_df['Event'] = df[df.columns[4]]
+    return n_df.iloc[:-1]
 
 def GDP_g20():
     page = requests.get("https://statisticstimes.com/economy/projected-world-gdp-ranking.php")
@@ -171,7 +166,6 @@ def GDP_g20():
     return rate[['Country','GDP_2020 (Billions $)','GDP_2021 (Billions $)','Growth 2021(%)']].sort_values(by='GDP_2020 (Billions $)',ascending=False)
 
 app = Dash(__name__)
-server = app.server
 
 
 colors = {
@@ -187,7 +181,8 @@ currency_pairs = ['EUR=X', 'GBP=X', 'JPY=X', 'CHF=X', 'CAD=X', 'AUD=X']
 web = True
 if web:
     calend = economic_calendar()
-    ey = euro_yields()
+    gy = ger_yield_rate()
+    uy = uk_yield_rate()
     iy = ita_yield_rate()
     usy = us_yield_rate()
     ei = inflation_euro()
@@ -345,7 +340,8 @@ ad.update_layout(title="USD/AUD",xaxis_rangeslider_visible=False)
 
 #macroeconomic data
 fig = go.Figure()
-fig.add_scatter(x=ey['res_maturity'],y=ey["Yield"],mode ="lines+markers",name="Euro area yields")
+fig.add_scatter(x=gy['res_maturity'], y=gy["last_Yield"], mode ="lines+markers", name="Germany yields")
+fig.add_scatter(x=uy['res_maturity'], y=uy["last_Yield"], mode ="lines+markers", name="United Kingdom yields")
 fig.add_scatter(x=iy['res_maturity'],y=iy["last_Yield"],mode='lines+markers',name="Italian yields")
 fig.add_scatter(x=usy['res_maturity'],y=usy["last_Yield"],mode='lines+markers',name="US yields")
 fig.update_layout(
