@@ -1,8 +1,6 @@
 dash==2.7.0
-chromedriver-py
 pandas
 bs4
-selenium
 yfinance
 plotly
 gunicorn
