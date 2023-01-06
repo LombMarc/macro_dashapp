@@ -1,0 +1,12 @@
+dash==2.7.0
+pandas==1.4.1
+gunicorn
+time
+bs4
+selenium
+requests
+pandas
+yfinance
+dash
+plotly
+datetime
