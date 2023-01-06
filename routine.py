@@ -478,4 +478,5 @@ app.layout = html.Div(children=[html.Div(children=[html.H1(children="Dashboard f
 #                      ,style={"width":'1169px'}
 )
 
-app.run_server(debug=False, port=8050)
+if __name__=='__main__':
+    app.run(debug=False)
