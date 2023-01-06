@@ -1,5 +1,5 @@
 dash==2.7.0
-pandas==1.4.1
+pandas
 time
 bs4
 selenium
