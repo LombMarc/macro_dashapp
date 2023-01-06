@@ -10,7 +10,6 @@ import datetime
 time_eval = lambda inp: [float(i[:2])/12 if (i.endswith("months") or i.endswith("month")) else float(i[:2]) for i in inp]
 
 def Euribor():
-
     page = requests.get("https://www.euribor-rates.eu/it/")
     soup = bs.BeautifulSoup(page.text, 'lxml')
     table = soup.find('table')
@@ -92,24 +91,6 @@ def uk_yield_rate():
     '''with pd.option_context('display.max_rows', None, 'display.max_columns', None):  # more options can be specified also
         print(rates)'''
     return rates
-'''
-def euro_yields():
-    driver = webdriver.Safari()
-    driver.get("https://www.ecb.europa.eu/stats/financial_markets_and_interest_rates/euro_area_yield_curves/html/index.en.html")
-    '''el= driver.find_element_by_xpath('//span[@onclick ="charts[0].switchDimension(1,1);"]"]')
-    el.click()'''
-    time.sleep(.2)
-    driver.execute_script("charts[0].switchDimension(1,1);")
-    driver.implicitly_wait(20)
-    soup = bs.BeautifulSoup(driver.page_source, 'html.parser')
-    table = soup.find('table')
-    rates = pd.read_html(str(table))[0]
-    driver.quit()
-    rates['res_maturity'] = time_eval(rates['Maturity'])
-    rates['Yield'] =rates[rates.columns[1]]/100
-    #print(rates)
-    return rates
-'''
 
 def inflation_euro():
     page = requests.get("https://www.rateinflation.com/inflation-rate/euro-area-historical-inflation-rate/")
