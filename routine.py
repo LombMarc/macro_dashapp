@@ -95,7 +95,7 @@ def uk_yield_rate():
     return rates
 
 def euro_yields():
-    driver = webdriver.Safari()
+    driver = webdriver.Chrome()
     driver.get("https://www.ecb.europa.eu/stats/financial_markets_and_interest_rates/euro_area_yield_curves/html/index.en.html")
     '''el= driver.find_element_by_xpath('//span[@onclick ="charts[0].switchDimension(1,1);"]"]')
     el.click()'''
@@ -143,7 +143,7 @@ def inflation_us():
     return rates
 
 def economic_calendar():
-    driver = webdriver.Safari()
+    driver = webdriver.Chrome()
     driver.get("https://www.investing.com/economic-calendar/")
     driver.implicitly_wait(20)
     soup = bs.BeautifulSoup(driver.page_source, 'html.parser')
