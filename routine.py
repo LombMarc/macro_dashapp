@@ -3,7 +3,6 @@ import bs4 as bs
 from selenium import webdriver
 import requests
 import pandas as pd
-import macroeconomic_data as mcd
 import yfinance as yf
 from dash import Dash, dcc, html,dash_table
 import plotly.graph_objects as go
