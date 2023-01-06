@@ -166,6 +166,7 @@ def GDP_g20():
     return rate[['Country','GDP_2020 (Billions $)','GDP_2021 (Billions $)','Growth 2021(%)']].sort_values(by='GDP_2020 (Billions $)',ascending=False)
 
 app = Dash(__name__)
+server = app.server
 
 
 colors = {
