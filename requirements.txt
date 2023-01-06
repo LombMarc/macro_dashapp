@@ -1,10 +1,7 @@
 dash==2.7.0
 pandas
-time
 bs4
 selenium
-requests
 yfinance
 plotly
-datetime
 gunicorn
