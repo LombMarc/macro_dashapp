@@ -3,7 +3,7 @@ import bs4 as bs
 import requests
 import pandas as pd
 import yfinance as yf
-from dash import Dash, dcc, html,dash_table
+from dash import Dash, dcc, html,dash_table, Input,Output,State
 import plotly.graph_objects as go
 import datetime
 
@@ -144,7 +144,9 @@ def GDP_g20():
     rate['Growth 2021(%)'] = rates[(                   'Growth (%)',            '2021')]
     return rate[['Country','GDP_2020 (Billions $)','GDP_2021 (Billions $)','Growth 2021(%)']].sort_values(by='GDP_2020 (Billions $)',ascending=False)
 
-app = Dash(__name__)
+app = Dash(__name__,meta_tags=[
+        {"name": "viewport", "content": "width=device-width, initial-scale=1"}
+    ])
 server = app.server
 
 
@@ -400,8 +402,49 @@ inflation['Annual_US (%)'] = round(usi[usi.columns[1:-1]].mean(axis=1,skipna=Tru
 inflation['Annual_EU (%)'] = round(ei[ei.columns[1:-1]].mean(axis=1,skipna=True)*100,4)
 
 
+#page layout for mobile
+mob = html.Div(
+    children=[
+        html.Div(children=[html.H1(children="Dashboard for stock market"),html.H1(children=str(datetime.date.today()),style={'margin':'auto'})]),
+        html.Div(children=dcc.Graph(id="SP500",figure=sp),style={'width':'80%'}),
+        html.Div(children=dcc.Graph(id="dow",figure=dj),style={'width':'80%'}),
+        html.Div(children=dcc.Graph(id="nsdq", figure=nq), style={'width': '80%'}),
+        html.Div(children=dcc.Graph(id="uk", figure=uk), style={'width': '80%'}),
+        html.Div(children=dcc.Graph(id="dax", figure=dx), style={'width': '80%'}),
+        html.Div(children=dcc.Graph(id="jap", figure=jp), style={'width': '80%'}),
+        html.Div(children=dcc.Graph(id="it", figure=mi), style={'width': '80%'}),
+        html.H2(children="Currency pairs"),
+        html.Div(children=dcc.Graph(id="de", figure=ed), style={'width': '80%'}),
+        html.Div(children=dcc.Graph(id="dp", figure=gd), style={'width': '80%'}),
+        html.Div(children=dcc.Graph(id="dy", figure=yd), style={'width': '80%'}),
+        html.Div(children=dcc.Graph(id="ds", figure=sd), style={'width': '80%'}),
+        html.Div(children=dcc.Graph(id="dc", figure=cd), style={'width': '80%'}),
+        html.Div(children=dcc.Graph(id="da", figure=ad), style={'width': '80%'}),
+        html.H1(children="Yield curves"),
+        html.Div(children=[dcc.Graph(id='Yield_curve',figure=fig)],style={'padding':'20px','margin-bottom':'30px','width':'80%'}),
+        html.Div(children=[html.H2(children="Inflation in 2022"), html.H4(children="The value for the last year available is the avarage inflation in the last months")]),
+        html.Div( children=[dash_table.DataTable(inflation.iloc[0:7].to_dict('records'), [{"name": i, "id": i} for i in inflation.columns],style_cell={'text-align':'center'})],style={'padding-left':'30px','padding-right':'30px'}),
+        html.Div( children =[dcc.Graph(id="Inflaiton",figure=inf)],style={'padding':'20px','margin-bottom':'30px','width':'80%'}),
+        html.Div(children=[html.H2(children="Euribor")]),
+        html.Div( children =[dcc.Graph(id="eurib",figure=rat)],style={'padding':'20px','margin-bottom':'30px','width':'80%'}),
+        html.Div(children=[html.H2(children="Inflation 2021")]),
+        html.Div( children =[dcc.Graph(id="infl21",figure=inf_it)],style={'padding':'20px','margin-bottom':'30px','width':'80%'}),
+        html.Div(children=[html.H2(children="GDP")]),
+        html.Div( children=[dash_table.DataTable(GDP.iloc[0:11].to_dict('records'), [{"name": i, "id": i} for i in GDP.columns],style_cell={'text-align':'center'})],style={'padding':'20px','margin-bottom':'30px','width':'80%'}),
+        html.Div( children =[dcc.Graph(id="gdp",figure=inf)],style={'padding':'20px','margin-bottom':'30px','width':'80%'}),
+        html.Div(children=[
+        html.H2(children="Economic calendar: "+str(datetime.date.today()),style={'padding-top':'50px'}),
+        html.Div(children=[dash_table.DataTable(calend.to_dict('records'), [{"name": i, "id": i} for i in calend.columns],style_cell={'text-align':'center'},style_header={
+        'backgroundColor': 'white',
+        'fontWeight': 'bold'
+    })],style={"margin-left":"25%",'margin-right':'25%','padding-top':'50px'})])
+    ]
+)
+
+
 #page layout
-app.layout = html.Div(children=[html.Div(children=[html.H1(children="Dashboard for stock market"),html.H1(children=str(datetime.date.today()),style={'margin-left':'85%'})]),
+desk = html.Div(children=[html.Div(children=[html.H1(children="Dashboard for stock market"),html.H1(children=str(datetime.date.today()),style={'margin-left':'85%'})]),
+    #html.Div(children=[html.Button('Mobile view', id='submit-val', n_clicks=0)]),
     html.Div(children=[html.H2(children="American market")]),
     html.Div(children=[html.Table( children=[
 
@@ -478,5 +521,10 @@ app.layout = html.Div(children=[html.Div(children=[html.H1(children="Dashboard f
 #                      ,style={"width":'1169px'}
 )
 
+
 if __name__=='__main__':
+    app.layout = mob
+    #app.layout = desk  #if you want to see with a large display
     app.run(debug=False)
+
+
