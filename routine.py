@@ -5,6 +5,7 @@ import pandas as pd
 import yfinance as yf
 import plotly.graph_objects as go
 import datetime
+from dash import Dash, dcc, html,dash_table
 
 time_eval = lambda inp: [float(i[:2])/12 if (i.endswith("months") or i.endswith("month")) else float(i[:2]) for i in inp]
 
