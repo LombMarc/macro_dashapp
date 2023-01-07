@@ -521,9 +521,10 @@ desk = html.Div(children=[html.Div(children=[html.H1(children="Dashboard for sto
 #                      ,style={"width":'1169px'}
 )
 
+app.layout = mob
 
 if __name__=='__main__':
-    app.layout = mob
+    
     #app.layout = desk  #if you want to see with a large display
     app.run(debug=False)
 
