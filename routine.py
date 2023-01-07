@@ -3,7 +3,6 @@ import bs4 as bs
 import requests
 import pandas as pd
 import yfinance as yf
-from dash import Dash, dcc, html,dash_table, Input,Output,State
 import plotly.graph_objects as go
 import datetime
 
