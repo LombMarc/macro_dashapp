@@ -431,7 +431,7 @@ mob = html.Div(
         html.Div( children =[dcc.Graph(id="infl21",figure=inf_it)],style={'padding':'20px','margin-bottom':'30px','width':'80%'}),
         html.Div(children=[html.H2(children="GDP")]),
         html.Div( children=[dash_table.DataTable(GDP.iloc[0:11].to_dict('records'), [{"name": i, "id": i} for i in GDP.columns],style_cell={'text-align':'center'})],style={'padding':'20px','margin-bottom':'30px','width':'80%'}),
-        html.Div( children =[dcc.Graph(id="gdp",figure=inf)],style={'padding':'20px','margin-bottom':'30px','width':'80%'}),
+        html.Div( children =[dcc.Graph(id="gdp",figure=gdp_fg)],style={'padding':'20px','margin-bottom':'30px','width':'80%'}),
         html.Div(children=[
         html.H2(children="Economic calendar: "+str(datetime.date.today()),style={'padding-top':'50px'}),
         html.Div(children=[dash_table.DataTable(calend.to_dict('records'), [{"name": i, "id": i} for i in calend.columns],style_cell={'text-align':'center'},style_header={
