@@ -422,7 +422,7 @@ mob = html.Div(
         html.Div(children=dcc.Graph(id="da", figure=ad), style={'width': '80%'}),
         html.H1(children="Yield curves"),
         html.Div(children=[dcc.Graph(id='Yield_curve',figure=fig)],style={'padding':'20px','margin-bottom':'30px','width':'80%'}),
-        html.Div(children=[html.H2(children="Inflation in 2022"), html.H4(children="The value for the last year available is the avarage inflation in the last months")]),
+        html.Div(children=[html.H2(children="Inflation"), html.H4(children="The value for the last year available is the avarage inflation in the last months")]),
         html.Div( children=[dash_table.DataTable(inflation.iloc[0:7].to_dict('records'), [{"name": i, "id": i} for i in inflation.columns],style_cell={'text-align':'center'})],style={'padding-left':'30px','padding-right':'30px'}),
         html.Div( children =[dcc.Graph(id="Inflaiton",figure=inf)],style={'padding':'20px','margin-bottom':'30px','width':'80%'}),
         html.Div(children=[html.H2(children="Euribor")]),
