@@ -1,4 +1,5 @@
 from core.view import create_app
 
 app = create_app()
-app.run_server(debug=False)
+if __name__ = '__main__':
+    app.run(debug=False)
