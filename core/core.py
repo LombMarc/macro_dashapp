@@ -3,7 +3,9 @@ import requests
 import pandas as pd
 import yfinance as yf
 import datetime
-
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+import time
 
 def Euribor():
     page = requests.get("https://www.euribor-rates.eu/it/")
@@ -15,11 +17,27 @@ def Euribor():
     # print(rates.drop([0,1],axis=1))
     return rates
 
-def yield_rate(country:str):
-    page = requests.get(f"http://www.worldgovernmentbonds.com/country/{country}/")
-    soup = bs.BeautifulSoup(page.text, 'lxml')
-    table = soup.find('table')
+def define_webdriver():
+    options = Options()
+    options.add_argument('--headless')  
+    options.add_argument('--disable-gpu')  
+    options.add_argument('--no-sandbox')  
 
+    driver = webdriver.Chrome(options=options)
+
+    return driver
+
+def yield_rate(country:str,driver):
+    page = f"http://www.worldgovernmentbonds.com/country/{country}/"
+      
+    driver.get(page)
+    time.sleep(2)  
+    soup = bs.BeautifulSoup(driver.page_source, 'lxml')
+    
+    with open('../page_html.html', 'w') as fl:
+        fl.write(soup.prettify())
+    
+    table = soup.find('table', {'id': 'table-curve'})
     rows = []
     for row in table.find_all('tr'):
         try:
@@ -69,10 +87,10 @@ def GDP_g20():
     table = soup.find_all('table')
     rates = pd.read_html(str(table))[1]
     rate = pd.DataFrame()
-    rate['Country'] = rates[('Country/Economy', 'Country/Economy')]
-    rate['GDP 2022 (Billions $)'] = rates[('GDP (Nominal) (billions of $)', '2022')]
-    rate['GDP 2023 (Billions $)'] = rates[('GDP (Nominal) (billions of $)', '2023')]
-    rate['Growth (%)'] = ((rate['GDP 2023 (Billions $)'] - rate['GDP 2022 (Billions $)'])/rate['GDP 2022 (Billions $)'])*100
+    rate['Country'] = rates[rates.columns[0]]
+    rate[rates.columns[1][-1]] = rates[list(rates.columns)[1]]
+    rate[rates.columns[3][-1]] = rates[list(rates.columns)[3]]
+    rate['Growth (%)'] = ((rate[rates.columns[3][-1]] - rate[rates.columns[3][-1]])/rate[rates.columns[3][-1]])*100
     return rate
 
 
