@@ -24,10 +24,11 @@ def create_app():
     web = True
     if web:
         calend = economic_calendar()
-        gy = yield_rate("germany")
-        uy = yield_rate("united-kingdom")
-        iy = yield_rate("italy")
-        usy = yield_rate("united-states")
+        web_driver = define_webdriver()
+        gy = yield_rate("germany", web_driver)
+        uy = yield_rate("united-kingdom", web_driver)
+        iy = yield_rate("italy", web_driver)
+        usy = yield_rate("united-states", web_driver)
         ii = get_inflation("italy-inflation-rate")
         ei = get_inflation("euro-area-historical-inflation-rate")
         usi = get_inflation("usa-inflation-rate")
@@ -200,8 +201,9 @@ def create_app():
     inf.add_scatter(x=ei.columns[1:-1],y=ei[ei.columns[1:-1]].iloc[0],mode="markers+lines",name="Euro")
     inf.add_scatter(x=ii.columns[1:-1],y=ii[ii.columns[1:-1]].iloc[0],mode="markers+lines",name="Italy")
     inf.add_scatter(x=usi.columns[1:-1],y=usi[usi.columns[1:-1]].iloc[0],mode="markers+lines",name="US")
+    inf_year = ii['Year'].iloc[0]
     inf.update_layout(
-        title=f"Inflation {year} ",
+        title=f"Inflation {inf_year} ",
         plot_bgcolor=colors['background'],
         paper_bgcolor=colors['background'],
         font_color=colors['text'],
@@ -214,7 +216,7 @@ def create_app():
     inf_it.add_scatter(x=ii.columns[1:-1],y=ii[ii.columns[1:-1]].iloc[1],mode="markers+lines",name="Italy")
     inf_it.add_scatter(x=usi.columns[1:-1],y=usi[usi.columns[1:-1]].iloc[1],mode="markers+lines",name="US")
     inf_it.update_layout(
-        title="Inflation 2022",
+        title=f"Inflation {inf_year-1}",
         plot_bgcolor=colors['background'],
         paper_bgcolor=colors['background'],
         font_color=colors['text'],
@@ -244,8 +246,8 @@ def create_app():
     )
 
     gdp_fg = go.Figure()
-    gdp_fg.add_bar(x=GDP['Country'].iloc[1:-1],y=GDP['GDP 2022 (Billions $)'].iloc[1:-1],name='GDP 2022')
-    gdp_fg.add_bar(x=GDP['Country'].iloc[1:-1],y=GDP['GDP 2023 (Billions $)'].iloc[1:-1],name='GDP 2023')
+    gdp_fg.add_bar(x=GDP['Country'].iloc[1:-1],y=GDP[str(GDP.columns[1])].iloc[1:-1],name=str(GDP.columns[1]))
+    gdp_fg.add_bar(x=GDP['Country'].iloc[1:-1],y=GDP[str(GDP.columns[2])].iloc[1:-1],name=str(GDP.columns[2]))
     gdp_fg.update_layout(
         title="GDP",
         plot_bgcolor=colors['background'],
@@ -347,14 +349,14 @@ def create_app():
             dcc.Graph(id='Yield_curve',figure=fig)
         ],style={'width':'80%','margin':'auto'}),
         #second div with table and plot of inflation
-        html.Div(children=[html.H2(children="Inflation in 2023"), html.H4(children="The value for the last year available is the avarage inflation in the last months"),
+        html.Div(children=[html.H2(children=f"Inflation in {inf_year}"), html.H4(children="The value for the last year available is the avarage inflation in the last months"),
             html.Div(children=[
             html.Div( children=[dash_table.DataTable(inflation.iloc[0:7].to_dict('records'), [{"name": i, "id": i} for i in inflation.columns],style_cell={'text-align':'center'})],style={'padding-left':'30px','padding-right':'30px','margin':'auto','flex':'1'}),
             html.Div( children =[dcc.Graph(id="Inflaiton",figure=inf)],style={'padding':'20px','margin-bottom':'30px','width':'45%'})],style={'display':'flex','width':'100%'})]
 
         ),
         #third div with table and plot of inflation
-        html.Div(children=[html.H2(children="EURIBOR and Inflation in 2022")]),
+        html.Div(children=[html.H2(children=f"EURIBOR and Inflation in {inf_year-1}")]),
         html.Div(children=[
             html.Div( children=[dcc.Graph(id='Euribor',figure=rat)],style={'width':'48%','padding':'20px','flex':'1'}),
             html.Div( children =[dcc.Graph(id="Inflaiton_it",figure=inf_it)],style={'width':'48%', 'float':'left','padding':'20px'})],style={'display':'flex'}
