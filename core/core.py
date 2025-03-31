@@ -42,12 +42,29 @@ class Euribor(Data_handler):
 
 
 def define_webdriver():
-    options = Options()
-    options.add_argument('--headless')  
-    options.add_argument('--disable-gpu')  
-    options.add_argument('--no-sandbox')  
+    try:
+        options = Options()
+        options.add_argument('--headless')  
+        options.add_argument('--disable-gpu')  
+        options.add_argument('--no-sandbox')  
 
-    driver = webdriver.Chrome(options=options)
+        driver = webdriver.Chrome(options=options)
+        return driver
+    
+    except:
+        options = Options()
+        options.add_argument("--no-sandbox")
+        options.add_argument("--headless=new")
+        options.add_argument("--disable-dev-shm-usage")
+        
+        # Point to our custom installation location
+        options.binary_location = "/tmp/chromium_bin/chromium-browser"
+        
+        # Create the driver with explicit path
+        return webdriver.Chrome(
+            executable_path="/tmp/chromium_bin/chromedriver",
+            options=options
+        )
 
     return driver
 
