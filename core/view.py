@@ -2,9 +2,11 @@ import datetime
 from dash import Dash, dcc, html, dash_table
 import plotly.graph_objects as go
 from core.core import *
+from data_discovery_job import store_long_term_data, store_daily_data
 
 def create_app():
-
+    store_long_term_data()
+    store_daily_data()
 
     year = str(datetime.datetime.today().year)
     app = Dash(__name__,meta_tags=[
