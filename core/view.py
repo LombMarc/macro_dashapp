@@ -10,7 +10,7 @@ def create_app():
     app = Dash(__name__,meta_tags=[
             {"name": "viewport", "content": "width=device-width, initial-scale=1"}
         ])
-    server = app.server
+    
 
 
     colors = {
@@ -23,17 +23,27 @@ def create_app():
     # retrive data
     web = True
     if web:
-        calend = economic_calendar()
-        web_driver = define_webdriver()
-        gy = yield_rate("germany", web_driver)
-        uy = yield_rate("united-kingdom", web_driver)
-        iy = yield_rate("italy", web_driver)
-        usy = yield_rate("united-states", web_driver)
-        ii = get_inflation("italy-inflation-rate")
-        ei = get_inflation("euro-area-historical-inflation-rate")
-        usi = get_inflation("usa-inflation-rate")
-        euribor = Euribor()
-        GDP = GDP_g20().iloc[:11]
+        with open(os.getcwd()+'/data/calendar.json', 'r') as f:
+            calend = pd.DataFrame(eval(f.read())['data'])
+        
+        with open(os.getcwd()+'/data/yield_curves.json', 'r') as f:
+            y_rates = eval(f.read())
+        gy = pd.DataFrame(y_rates['germany']['data'])
+        uy = pd.DataFrame(y_rates["united-kingdom"]['data'])
+        iy = pd.DataFrame(y_rates["italy"]['data'])
+        usy = pd.DataFrame(y_rates["united-states"]['data'])
+        with open(os.getcwd()+'/data/inflation.json', 'r') as f:
+            infl = eval(f.read().replace("NaN","None"))
+
+        ii = pd.DataFrame(infl["italy-inflation-rate"]['data'])
+        ei = pd.DataFrame(infl["euro-area-historical-inflation-rate"]['data'])
+        usi = pd.DataFrame(infl["usa-inflation-rate"]['data'])
+        
+        with open(os.getcwd()+'/data/euribor.json','r') as f:
+            euribor = pd.DataFrame(eval(f.read())['data'])
+        
+        with open(os.getcwd()+'/data/gdp.json','r') as f:
+            GDP = pd.DataFrame(eval(f.read())['data'])
 
     pd_st = []
     for i in stock_indices:
