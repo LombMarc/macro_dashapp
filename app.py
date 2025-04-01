@@ -1,4 +1,4 @@
-from core.view import create_app
+from core.view import create_app, store_daily_data, store_long_term_data
 import threading
 import schedule
 import time
@@ -20,7 +20,7 @@ if __name__ == "__main__":
     scheduler_thread.daemon = True
     scheduler_thread.start()
     
-    app.run_server(port=8050, debug=True)
+    app.run_server(host = '0.0.0.0', port=8050)
 else:
     scheduler_thread = threading.Thread(target=run_scheduled_task)
     scheduler_thread.daemon = True

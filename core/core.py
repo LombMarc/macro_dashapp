@@ -57,14 +57,7 @@ def define_webdriver():
         options.add_argument("--headless=new")
         options.add_argument("--disable-dev-shm-usage")
         
-        # Point to our custom installation location
-        options.binary_location = "/tmp/chromium_bin/chromium-browser"
-        
-        # Create the driver with explicit path
-        return webdriver.Chrome(
-            executable_path="/tmp/chromium_bin/chromedriver",
-            options=options
-        )
+        return webdriver.Chrome(options=options)
 
     return driver
 
